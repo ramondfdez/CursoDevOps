@@ -1,0 +1,19 @@
+version: '3'
+services:
+  db:
+    image: mysql:5.7
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: mydb
+    volumes:
+      - db_data:/var/lib/mysql
+  web:
+    image: php:7.2-apache
+    depends_on:
+      - db
+    volumes:
+      - .:/var/www/html
+    ports:
+      - "8080:80"
+volumes:
+  db_data:

@@ -1,4 +1,4 @@
 FROM nginx:alpine
 COPY default.conf /etc/nginx/conf.d/
-COPY web.html /usr/share/nginx/html
-EXPOSE 80
+COPY inicio.html /usr/share/nginx/html
+EXPOSE 8080

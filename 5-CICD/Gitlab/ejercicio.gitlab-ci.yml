@@ -1,0 +1,66 @@
+stages:
+  - pre-checks
+  - build
+  - test
+  - sonarqube
+  - package
+  - push
+  - deploy
+  - image-scan
+
+pre-checks:
+  stage: pre-checks
+  script:
+    - echo "Multiple pre-checks..."
+    - echo "Linting..."
+
+build:
+  stage: build
+  image: node:16
+  script:
+    - npm install
+    - npm run build
+  artifacts:
+    expire_in: 1 hour
+    paths:
+      - build
+      - node_modules/
+
+test:
+  stage: test
+  image: node
+  script:
+    - echo "Doing tests"
+    #- npm run test
+
+sonarqube:
+  stage: sonarqube
+  image: sonarsource/sonar-scanner-cli
+  script:
+    - echo "Scanning code in Sonar Server..."
+    #- sonar-scanner -Dsonar.projectKey=react-ui -Dsonar.sources=. -Dsonar.host.url=$SONAR_URL -Dsonar.login=$SONAR_LOGIN
+
+
+package:
+  stage: package
+  image: docker:20.10.16
+  services:
+    - docker:dind
+  script:
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    - docker build -t ramondfdez/react-ui:$CI_PIPELINE_ID .
+    - docker push ramondfdez/react-ui:$CI_PIPELINE_ID
+
+image-scan:
+  stage: image-scan
+  script:
+    - echo "Doing an image scanning"
+
+deploy:
+  stage: deploy
+  script:
+    - echo "Deploying to production..."
+    - echo "Connecting to server..."
+    - echo "Kubectl command"
+  only:
+    - main

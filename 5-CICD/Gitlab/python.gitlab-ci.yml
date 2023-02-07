@@ -1,0 +1,19 @@
+image: python:alpine
+
+before_script:
+  - python --version
+
+test:
+  script:
+    - echo "Running some tests!"
+
+run:
+  script:
+    - python helloworld.py
+
+deploy:
+  stage: deploy
+  script: 
+    - echo "Deploying to dev!"
+  environment:
+    name: dev
